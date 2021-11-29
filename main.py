@@ -44,11 +44,12 @@ def main():
     random.Random(64).shuffle(index)
     N = len(index)
     train, test = split_data(images, index, int(N * 2/3))
-    random.Random(64).shuffle(train) # shuffle again
+    random.Random(128).shuffle(train) # shuffle again
+    rand_train = np.random.choice(len(train), size=10, replace=False)
     d1_arr=[]
     d2_arr=[]
     # val = random.randint(0,259)
-    for j in range(10):
+    for j in rand_train:
         for i in np.arange(40)*10:
             d1,d2 = sift_feature(train[j],images[i])
         d1_arr.append(d1)
