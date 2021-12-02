@@ -26,8 +26,50 @@ def split_data(data, index, n):
     return data_split
 
 
-def match_fun():
-    pass
+def match_fun(des1, des2):
+    r1,c1 = des1.shape #queried
+    r2,c2 = des2.shape #database image
+    rate = 0
+    d_all =[]
+    min_darr = []
+    match = []
+    for i in range(r1): #71
+        d = []
+        for j in range(r2):#56
+            distance = np.linalg.norm(des1[i]-des2[j])
+            d.append(distance)
+        d_all.append(d)
+        min_d = min(d)
+        min_darr.append(min_d)
+    if (r1<r2):
+        check = list(np.arange(r2))
+        for i in range(r1):
+            smallest_d = min(min_darr)
+            threshold = np.mean(np.array(min_darr))
+            if smallest_d<threshold:
+                smallest_ind = min_darr.index(smallest_d)
+                des_sel = d_all[smallest_ind].index(smallest_d)
+                if des_sel in check:
+                    match.append([smallest_ind, des_sel])
+                    check.remove(des_sel)
+            min_darr.remove(smallest_d)
+        len_match = len(match)
+        rate = (len_match / r1) * 100
+    else:
+        check = list(np.arange(r1))
+        for i in range(r2):
+            smallest_d = min(min_darr)
+            threshold = np.mean(np.array(min_darr))
+            if smallest_d < threshold:
+                smallest_ind = min_darr.index(smallest_d)
+                des_sel = d_all[smallest_ind].index(smallest_d)
+                if des_sel in check:
+                    match.append([smallest_ind, des_sel])
+                    check.remove(des_sel)
+            min_darr.remove(smallest_d)
+        len_match = len(match)
+        rate = (len_match / r2) * 100
+    return rate
 
 
 def sift_feature(image1, image2):
@@ -46,18 +88,28 @@ def main():
     train, test = split_data(images, index, int(N * 2/3))
     random.Random(128).shuffle(train) # shuffle again
     rand_train = np.random.choice(len(train), size=10, replace=False)
-    d1_arr=[]
-    d2_arr=[]
+    max_match = []
+    fold_match = []
     # val = random.randint(0,259)
     for j in rand_train:
         for i in np.arange(40)*10:
             d1,d2 = sift_feature(train[j],images[i])
-        d1_arr.append(d1)
-        d2_arr.append(d2)
-
+            match_rate = match_fun(d1,d2)
+            if (match_rate>70):
+                for k in range(10):
+                    fold = k+i
+                    des1, des2 = sift_feature(train[j],images[fold])
+                    match_rate = match_fun(des1,des2)
+                    max_match.append(match_rate)
+                maximum = max(max_match)
+                ind_max = max_match.index(maximum)
+                fold_match.append([ind_max+i,maximum])
+    for i in range(len(fold_match)):
+        if (fold_match[i][1]>90):
+            print('I love Anaya')
+            print(fold_match[i][0])
 
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     main()
-
