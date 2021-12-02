@@ -52,7 +52,7 @@ def match_fun(des1, des2):
                 if des_sel in check:
                     match.append([smallest_ind, des_sel])
                     check.remove(des_sel)
-            min_darr.remove(smallest_d)
+                min_darr[smallest_ind] = np.inf
         len_match = len(match)
         rate = (len_match / r1) * 100
     else:
@@ -66,7 +66,7 @@ def match_fun(des1, des2):
                 if des_sel in check:
                     match.append([smallest_ind, des_sel])
                     check.remove(des_sel)
-            min_darr.remove(smallest_d)
+                min_darr[smallest_ind] = np.inf
         len_match = len(match)
         rate = (len_match / r2) * 100
     return rate
@@ -105,7 +105,7 @@ def main():
                 ind_max = max_match.index(maximum)
                 fold_match.append([ind_max+i,maximum])
     for i in range(len(fold_match)):
-        if (fold_match[i][1]>90):
+        if (fold_match[i][1] > 90):
             print('I love Anaya')
             print(fold_match[i][0])
 
