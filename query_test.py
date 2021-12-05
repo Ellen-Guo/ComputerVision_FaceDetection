@@ -27,6 +27,7 @@ def split_data(data, index, n):
     return data_split
 
 
+# matcher function for matching descriptors
 def match_fun(des1, des2):
     r1,c1 = des1.shape #queried
     r2,c2 = des2.shape #database image
@@ -92,6 +93,7 @@ def match_fun(des1, des2):
     return rate
 
 
+# create sift key and desc.
 def sift_feature(image1, image2):
     sift = cv2.SIFT_create()
     kp1, des1 = sift.detectAndCompute(image1, None)
@@ -99,6 +101,7 @@ def sift_feature(image1, image2):
     return des1, des2
 
 
+# determine prediction error rate
 def check(predict, target):
     error = 0
     for k in range(len(target)):
@@ -108,6 +111,7 @@ def check(predict, target):
     return error
 
 
+# display the query and predicted class image
 def display_img(img, query, predict, title):
     fig, axs = plt.subplots(len(query), 2)
     fig.suptitle(title)
@@ -118,6 +122,15 @@ def display_img(img, query, predict, title):
         axs[i, 0].axis('off')
         axs[i, 1].imshow(img[predict[i]*10], cmap='gray')
         axs[i, 1].axis('off')
+
+
+# plot the error rate for each database
+def visual(title, x1, y1):
+    plt.figure()
+    plt.plot(x1, y1, 'bo')
+    plt.xlabel('Num. Images in Database')
+    plt.ylabel('Training Query Error')
+    plt.title(title)
 
 
 def main():
@@ -210,6 +223,8 @@ def main():
         display_img(images, all_train[i], all_predicted[i], '%s Image in Database' %(i+1))
 
     display_img(images, test_query, predict, 'Test Set Results')
+    # plot the Training Rate Error
+    visual('Training Error Rates', np.arange(len(error_arr)) + 1, error_arr)
     plt.show()
 
 
