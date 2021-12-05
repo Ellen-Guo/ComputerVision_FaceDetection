@@ -134,6 +134,7 @@ def main():
     sel_index = np.arange(len(train))
     count = 0
     error_arr = []
+    # store all queried image & predictions made
     all_train = []
     all_predicted = []
     # determine optimal database image value
@@ -167,7 +168,7 @@ def main():
         all_predicted.append(predict)
         curr_error = check(predict, target)
         count += 1
-        print('Error for %s Image in Database: %s' % (count, curr_error))
+        print('Training error for %s Image in Database: %s' % (count, curr_error))
         error_arr.append(curr_error)
 
     # Testing
@@ -204,6 +205,7 @@ def main():
     test_error = check(predict, target)
     print('Test Error: ', test_error)
 
+    # Display Query & 1st image in the predicted class/folder
     for i in range(len(all_train)):
         display_img(images, all_train[i], all_predicted[i], '%s Image in Database' %(i+1))
 
